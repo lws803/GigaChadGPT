@@ -84,6 +84,7 @@ export default function Nav({ isMenuOpened, setMessages }: Props) {
             leftIcon={<IconBrandGithub size={14} />}
             component={Link}
             href="https://github.com/lws803/GigaChadGPT"
+            target="_blank"
           >
             Github
           </Button>
