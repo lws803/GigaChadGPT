@@ -9,7 +9,7 @@ import { errorHandler } from "@/api/shared/handler";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<CreateChatCompletionResponse["choices"]>
+  res: NextApiResponse<CreateChatCompletionResponse>
 ) {
   try {
     if (req.method === "POST") {
@@ -21,17 +21,16 @@ export default async function handler(
 
       const parsedReqBody = postMessageSchema.parse(req.body);
       const idToken = req.headers.authorization || "";
-      const user = await verifyIdToken(firebaseApp, idToken);
+      await verifyIdToken(firebaseApp, idToken);
 
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: parsedReqBody.messages,
       });
 
-      return res.status(status.OK).json(response.data.choices || []);
+      return res.status(status.OK).json(response.data);
     }
   } catch (e) {
-    console.log("🚀 ~ file: chat.ts:34 ~ e:", e);
     errorHandler(e, res);
   }
   return res.status(status.NOT_FOUND).end();

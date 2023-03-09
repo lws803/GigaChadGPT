@@ -11,7 +11,7 @@ export async function post(
 ) {
   const response = await axios.post<
     unknown,
-    AxiosResponse<CreateChatCompletionResponse["choices"]>,
+    AxiosResponse<CreateChatCompletionResponse>,
     { messages: ChatCompletionRequestMessage[] }
   >(
     "/api/chat",
@@ -27,5 +27,8 @@ export async function post(
     { headers: { Authorization: userToken } }
   );
 
-  return response.data[0].message?.content || null;
+  return {
+    content: response.data.choices[0].message?.content || null,
+    id: response.data.id,
+  };
 }

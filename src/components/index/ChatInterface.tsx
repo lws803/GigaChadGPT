@@ -3,12 +3,13 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { ChatCompletionRequestMessage } from "openai";
+import { v4 as uuidv4 } from "uuid";
 
 import { post } from "@/modules/openai/actions";
 import { useAuth } from "@/modules/auth";
 
-import ChatBubble from "./ChatBubble";
+import ChatBubble from "./ChatInterface/ChatBubble";
+import { Message } from "./ChatInterface/types";
 
 export default function ChatInterface({ messages, setMessages }: Props) {
   const { currentUser } = useAuth();
@@ -25,7 +26,11 @@ export default function ChatInterface({ messages, setMessages }: Props) {
     },
   });
 
-  const { mutate, isLoading } = useMutation<string | null, unknown, string>({
+  const { mutate, isLoading } = useMutation<
+    { content: string | null; id: string },
+    unknown,
+    string
+  >({
     mutationFn: async (data) =>
       post(
         data,
@@ -33,7 +38,10 @@ export default function ChatInterface({ messages, setMessages }: Props) {
         (await currentUser?.getIdToken()) || ""
       ),
     onSuccess: (data) => {
-      setMessages([...messages, { role: "assistant", content: data || "" }]);
+      setMessages([
+        ...messages,
+        { role: "assistant", content: data.content || "", id: data.id },
+      ]);
     },
     onError: () => {
       notifications.show({
@@ -48,7 +56,10 @@ export default function ChatInterface({ messages, setMessages }: Props) {
     <form
       onSubmit={form.onSubmit((values) => {
         mutate(values.message);
-        setMessages([...messages, { role: "user", content: values.message }]);
+        setMessages([
+          ...messages,
+          { role: "user", content: values.message, id: uuidv4() },
+        ]);
         form.reset();
       })}
     >
@@ -56,8 +67,8 @@ export default function ChatInterface({ messages, setMessages }: Props) {
         <Stack>
           <ScrollArea h="calc(100vh - 120px)">
             <Stack spacing={0}>
-              {messages.reverse().map((message, index) => (
-                <ChatBubble key={index} message={message} />
+              {messages.reverse().map((message) => (
+                <ChatBubble key={message.id} message={message} />
               ))}
             </Stack>
           </ScrollArea>
@@ -83,6 +94,6 @@ export default function ChatInterface({ messages, setMessages }: Props) {
 }
 
 type Props = {
-  messages: ChatCompletionRequestMessage[];
-  setMessages: (messages: ChatCompletionRequestMessage[]) => void;
+  messages: Message[];
+  setMessages: (messages: Message[]) => void;
 };

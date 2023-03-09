@@ -9,15 +9,15 @@ import {
   Center,
 } from "@mantine/core";
 import { IconLogin, IconLogout, IconPlus, IconSun } from "@tabler/icons-react";
-import { ChatCompletionRequestMessage } from "openai";
+import GoogleButton from "react-google-button";
 
+import { Message } from "@/components/index/ChatInterface/types";
 import { useAuth } from "@/modules/auth";
 import ChatInterface from "@/components/index/ChatInterface";
-import GoogleButton from "react-google-button";
 
 export default function Home() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const { signOut, signIn, currentUser, authState } = useAuth();
 
   return (
