@@ -26,7 +26,7 @@ export async function post(
         },
       ],
     },
-    { headers: { Authorization: userToken } }
+    { headers: { Authorization: userToken }, timeout: 30000 }
   );
 
   // TODO: Do a bit of string processing here to remove white spaces or commas which can sometimes
