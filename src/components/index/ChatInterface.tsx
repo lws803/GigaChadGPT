@@ -105,14 +105,16 @@ export default function ChatInterface({ messages, setMessages }: Props) {
             }
             {...form.getInputProps("message")}
           />
-          <Button
-            variant="subtle"
-            leftIcon={<IconBrandGithub size={14} />}
-            component={Link}
-            href="https://github.com/lws803/GigaChadGPT"
-          >
-            Github
-          </Button>
+          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+            <Button
+              variant="subtle"
+              leftIcon={<IconBrandGithub size={14} />}
+              component={Link}
+              href="https://github.com/lws803/GigaChadGPT"
+            >
+              Github
+            </Button>
+          </MediaQuery>
         </Stack>
       </Box>
     </form>
