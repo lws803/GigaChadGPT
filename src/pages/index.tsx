@@ -17,7 +17,13 @@ export default function Home() {
   return (
     <AppShell
       padding="md"
-      navbar={<Nav isMenuOpened={isMenuOpened} setMessages={setMessages} />}
+      navbar={
+        <Nav
+          isMenuOpened={isMenuOpened}
+          setMessages={setMessages}
+          setIsMenuOpened={setIsMenuOpened}
+        />
+      }
       styles={(theme) => ({
         main: {
           backgroundColor:

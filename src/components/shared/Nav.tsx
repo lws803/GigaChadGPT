@@ -19,7 +19,11 @@ import { useAuth } from "@/modules/auth";
 
 import { Message } from "../index/ChatInterface/types";
 
-export default function Nav({ isMenuOpened, setMessages }: Props) {
+export default function Nav({
+  isMenuOpened,
+  setMessages,
+  setIsMenuOpened,
+}: Props) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { currentUser, signIn, signOut } = useAuth();
 
@@ -35,7 +39,10 @@ export default function Nav({ isMenuOpened, setMessages }: Props) {
           size="md"
           variant="outline"
           leftIcon={<IconPlus size={16} />}
-          onClick={() => setMessages([])}
+          onClick={() => {
+            setMessages([]);
+            setIsMenuOpened(false);
+          }}
           sx={() => ({
             ".mantine-Button-inner": {
               justifyContent: "start",
@@ -109,4 +116,5 @@ export default function Nav({ isMenuOpened, setMessages }: Props) {
 type Props = {
   isMenuOpened: boolean;
   setMessages: (messages: Message[]) => void;
+  setIsMenuOpened: (isOpened: boolean) => void;
 };
