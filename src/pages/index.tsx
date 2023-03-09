@@ -103,11 +103,11 @@ export default function Home() {
                 Github
               </Button>
               <a
-                href="https://www.producthunt.com/products/gigachadgpt/reviews?utm_source=badge-product_review&utm_medium=badge&utm_souce=badge-gigachadgpt"
+                href="https://www.producthunt.com/posts/gigachadgpt?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-gigachadgpt"
                 target="_blank"
               >
                 <Image
-                  src={`https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=524607&theme=${colorScheme}`}
+                  src={`https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=383111&theme=${colorScheme}`}
                   alt="GigaChadGPT - GigaChadGPT&#0032;&#0045;&#0032;the&#0032;ultimate&#0032;bro&#0032;who&#0039;s&#0032;got&#0032;your&#0032;back&#0032;24&#0047;7 | Product Hunt"
                   width={250}
                   height={54}
