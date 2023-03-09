@@ -4,6 +4,7 @@ import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
+import { useMediaQuery } from "@mantine/hooks";
 
 import { post } from "@/modules/openai/actions";
 import { useAuth } from "@/modules/auth";
@@ -13,6 +14,7 @@ import { Message } from "./ChatInterface/types";
 
 export default function ChatInterface({ messages, setMessages }: Props) {
   const { currentUser } = useAuth();
+  const isSmallScreen = useMediaQuery("(max-width:768px)");
 
   const form = useForm({
     initialValues: { message: "" },
@@ -65,7 +67,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
     >
       <Box sx={() => ({ paddingTop: "16px" })}>
         <Stack>
-          <ScrollArea h="calc(100vh - 120px)">
+          <ScrollArea h={`calc(100vh - ${isSmallScreen ? 200 : 120}px)`}>
             <Stack spacing={0}>
               {messages.map((message) => (
                 <ChatBubble key={message.id} message={message} />
