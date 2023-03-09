@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import {
   AppShell,
@@ -7,7 +8,6 @@ import {
   Stack,
   useMantineColorScheme,
   Center,
-  Text,
 } from "@mantine/core";
 import {
   IconBrandGithub,
@@ -18,6 +18,7 @@ import {
 } from "@tabler/icons-react";
 import GoogleButton from "react-google-button";
 import Link from "next/link";
+import Image from "next/image";
 
 import { Message } from "@/components/index/ChatInterface/types";
 import { useAuth } from "@/modules/auth";
@@ -101,6 +102,18 @@ export default function Home() {
               >
                 Github
               </Button>
+              <a
+                href="https://www.producthunt.com/products/gigachadgpt/reviews?utm_source=badge-product_review&utm_medium=badge&utm_souce=badge-gigachadgpt"
+                target="_blank"
+              >
+                <Image
+                  src={`https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=524607&theme=${colorScheme}`}
+                  alt="GigaChadGPT - GigaChadGPT&#0032;&#0045;&#0032;the&#0032;ultimate&#0032;bro&#0032;who&#0039;s&#0032;got&#0032;your&#0032;back&#0032;24&#0047;7 | Product Hunt"
+                  width={250}
+                  height={54}
+                  loader={({ src }) => src}
+                />
+              </a>
             </Stack>
           </Stack>
         </Navbar>
