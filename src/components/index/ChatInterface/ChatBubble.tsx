@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Group, Avatar, Box, Text, useMantineTheme } from "@mantine/core";
 import { ChatCompletionRequestMessage } from "openai";
 import Image from "next/image";
+import { useMediaQuery } from "@mantine/hooks";
 
 import GigaChadImage from "../../../../public/gigachad.jpg";
 import { useAuth } from "@/modules/auth";
@@ -11,6 +12,7 @@ const DICE_BEAR_AVATAR_BASE_URL = "https://api.dicebear.com/5.x/initials/svg";
 export default function ChatBubble({ message }: Props) {
   const theme = useMantineTheme();
   const ref = useRef<HTMLDivElement>(null);
+  const isSmallScreen = useMediaQuery("(max-width:768px)");
 
   const bgColors = {
     assistant:
@@ -23,8 +25,8 @@ export default function ChatBubble({ message }: Props) {
         : theme.colors.gray[1],
   };
   useEffect(() => {
-    ref.current?.scrollIntoView(true);
-  }, []);
+    !isSmallScreen && ref.current?.scrollIntoView(true);
+  }, [isSmallScreen]);
 
   const { currentUser } = useAuth();
 

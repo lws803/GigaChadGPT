@@ -21,7 +21,6 @@ import { Message } from "./ChatInterface/types";
 
 export default function ChatInterface({ messages, setMessages }: Props) {
   const { currentUser } = useAuth();
-  const isSmallScreen = useMediaQuery("(max-width:768px)");
 
   const form = useForm({
     initialValues: { message: "" },
