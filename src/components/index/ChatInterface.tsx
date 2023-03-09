@@ -91,7 +91,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
           </MediaQuery>
           <TextInput
             autoComplete="off"
-            sx={() => ({ width: "100%" })}
+            sx={() => ({ width: "100%", marginBottom: "20px" })}
             size="md"
             rightSection={
               <ActionIcon
