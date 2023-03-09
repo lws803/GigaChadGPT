@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import {
@@ -8,7 +9,9 @@ import {
 import { useLocalStorage } from "@mantine/hooks";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Notifications } from "@mantine/notifications";
+import { getAnalytics } from "firebase/analytics";
 
+import getFirebase from "@/shared/getFirebase";
 import { AuthContext } from "@/modules/auth";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -22,6 +25,13 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const app = getFirebase();
+      getAnalytics(app);
+    }
+  }, []);
 
   return (
     <>
