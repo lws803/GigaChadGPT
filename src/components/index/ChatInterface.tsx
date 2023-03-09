@@ -1,4 +1,11 @@
-import { Box, Stack, ScrollArea, TextInput, ActionIcon } from "@mantine/core";
+import {
+  Box,
+  Stack,
+  ScrollArea,
+  TextInput,
+  ActionIcon,
+  MediaQuery,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
@@ -67,13 +74,22 @@ export default function ChatInterface({ messages, setMessages }: Props) {
     >
       <Box sx={() => ({ paddingTop: "16px" })}>
         <Stack>
-          <ScrollArea h={`calc(100vh - ${isSmallScreen ? 200 : 120}px)`}>
+          <MediaQuery styles={{ display: "none" }} smallerThan="sm">
+            <ScrollArea h={"calc(100vh - 120px)"}>
+              <Stack spacing={0}>
+                {messages.map((message) => (
+                  <ChatBubble key={message.id} message={message} />
+                ))}
+              </Stack>
+            </ScrollArea>
+          </MediaQuery>
+          <MediaQuery styles={{ display: "none" }} largerThan="sm">
             <Stack spacing={0}>
               {messages.map((message) => (
                 <ChatBubble key={message.id} message={message} />
               ))}
             </Stack>
-          </ScrollArea>
+          </MediaQuery>
           <TextInput
             autoComplete="off"
             sx={() => ({ width: "100%" })}
