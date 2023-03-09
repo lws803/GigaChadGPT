@@ -8,6 +8,10 @@ import {
   Stack,
   useMantineColorScheme,
   Center,
+  Header,
+  MediaQuery,
+  Group,
+  Burger,
 } from "@mantine/core";
 import {
   IconBrandGithub,
@@ -28,6 +32,7 @@ export default function Home() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [messages, setMessages] = useState<Message[]>([]);
   const { signOut, signIn, currentUser, authState } = useAuth();
+  const [isMenuOpened, setIsMenuOpened] = useState(false);
 
   return (
     <AppShell
@@ -36,7 +41,7 @@ export default function Home() {
         <Navbar
           p="md"
           hiddenBreakpoint="sm"
-          hidden
+          hidden={!isMenuOpened}
           width={{ sm: 300, lg: 300 }}
         >
           <Stack
@@ -124,11 +129,24 @@ export default function Home() {
             theme.colorScheme === "dark"
               ? theme.colors.dark[8]
               : theme.colors.gray[0],
-
-          paddingTop: "0px",
-          paddingBottom: "0px",
         },
       })}
+      header={
+        <MediaQuery styles={{ display: "none" }} largerThan="sm">
+          <Header height={{ base: 60, md: 0, sm: 0 }} p="md">
+            <Group sx={() => ({ justifyContent: "flex-start", width: "100%" })}>
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <Burger
+                  opened={isMenuOpened}
+                  onClick={() => setIsMenuOpened((o) => !o)}
+                  size="sm"
+                  mr="xl"
+                />
+              </MediaQuery>
+            </Group>
+          </Header>
+        </MediaQuery>
+      }
     >
       {authState === "signedOut" ? (
         <Center h="100vh">

@@ -78,53 +78,51 @@ export default function ChatInterface({ messages, setMessages }: Props) {
         form.reset();
       })}
     >
-      <Box sx={() => ({ paddingTop: "16px" })}>
-        <Stack>
-          <MediaQuery styles={{ display: "none" }} smallerThan="sm">
-            <ScrollArea h={"calc(100vh - 120px)"}>
-              <Stack spacing={0}>
-                {messages.map((message) => (
-                  <ChatBubble key={message.id} message={message} />
-                ))}
-              </Stack>
-            </ScrollArea>
-          </MediaQuery>
-          <MediaQuery styles={{ display: "none" }} largerThan="sm">
+      <Stack>
+        <MediaQuery styles={{ display: "none" }} smallerThan="sm">
+          <ScrollArea h={"calc(100vh - 120px)"}>
             <Stack spacing={0}>
               {messages.map((message) => (
                 <ChatBubble key={message.id} message={message} />
               ))}
             </Stack>
-          </MediaQuery>
-          <TextInput
-            ref={inputRef}
-            autoComplete="off"
-            sx={() => ({ width: "100%", marginBottom: "20px" })}
-            size="md"
-            rightSection={
-              <ActionIcon
-                type="submit"
-                loading={isLoading}
-                disabled={!form.isValid}
-                size="md"
-              >
-                <IconSend size={16} />
-              </ActionIcon>
-            }
-            {...form.getInputProps("message")}
-          />
-          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-            <Button
-              variant="subtle"
-              leftIcon={<IconBrandGithub size={14} />}
-              component={Link}
-              href="https://github.com/lws803/GigaChadGPT"
+          </ScrollArea>
+        </MediaQuery>
+        <MediaQuery styles={{ display: "none" }} largerThan="sm">
+          <Stack spacing={0}>
+            {messages.map((message) => (
+              <ChatBubble key={message.id} message={message} />
+            ))}
+          </Stack>
+        </MediaQuery>
+        <TextInput
+          ref={inputRef}
+          autoComplete="off"
+          sx={() => ({ width: "100%", marginBottom: "20px" })}
+          size="md"
+          rightSection={
+            <ActionIcon
+              type="submit"
+              loading={isLoading}
+              disabled={!form.isValid}
+              size="md"
             >
-              Github
-            </Button>
-          </MediaQuery>
-        </Stack>
-      </Box>
+              <IconSend size={16} />
+            </ActionIcon>
+          }
+          {...form.getInputProps("message")}
+        />
+        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+          <Button
+            variant="subtle"
+            leftIcon={<IconBrandGithub size={14} />}
+            component={Link}
+            href="https://github.com/lws803/GigaChadGPT"
+          >
+            Github
+          </Button>
+        </MediaQuery>
+      </Stack>
     </form>
   );
 }
