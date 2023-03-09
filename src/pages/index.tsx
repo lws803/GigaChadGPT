@@ -7,9 +7,17 @@ import {
   Stack,
   useMantineColorScheme,
   Center,
+  Text,
 } from "@mantine/core";
-import { IconLogin, IconLogout, IconPlus, IconSun } from "@tabler/icons-react";
+import {
+  IconBrandGithub,
+  IconLogin,
+  IconLogout,
+  IconPlus,
+  IconSun,
+} from "@tabler/icons-react";
 import GoogleButton from "react-google-button";
+import Link from "next/link";
 
 import { Message } from "@/components/index/ChatInterface/types";
 import { useAuth } from "@/modules/auth";
@@ -79,6 +87,19 @@ export default function Home() {
                 })}
               >
                 {currentUser ? "Sign out" : "Sign in"}
+              </Button>
+              <Button
+                sx={() => ({
+                  ".mantine-Button-inner": {
+                    justifyContent: "start",
+                  },
+                })}
+                variant="subtle"
+                leftIcon={<IconBrandGithub size={14} />}
+                component={Link}
+                href="https://github.com/lws803/GigaChadGPT"
+              >
+                Github
               </Button>
             </Stack>
           </Stack>

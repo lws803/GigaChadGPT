@@ -5,13 +5,14 @@ import {
   TextInput,
   ActionIcon,
   MediaQuery,
+  Button,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconSend } from "@tabler/icons-react";
+import { IconBrandGithub, IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
-import { useMediaQuery } from "@mantine/hooks";
+import Link from "next/link";
 
 import { post } from "@/modules/openai/actions";
 import { useAuth } from "@/modules/auth";
@@ -104,6 +105,14 @@ export default function ChatInterface({ messages, setMessages }: Props) {
             }
             {...form.getInputProps("message")}
           />
+          <Button
+            variant="subtle"
+            leftIcon={<IconBrandGithub size={14} />}
+            component={Link}
+            href="https://github.com/lws803/GigaChadGPT"
+          >
+            Github
+          </Button>
         </Stack>
       </Box>
     </form>
