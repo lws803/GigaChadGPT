@@ -1,20 +1,16 @@
 import { useRef, useEffect } from "react";
 import {
-  Box,
   Stack,
   ScrollArea,
   TextInput,
   ActionIcon,
   MediaQuery,
-  Button,
-  Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconBrandGithub, IconSend } from "@tabler/icons-react";
+import { IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
-import Link from "next/link";
 
 import { post } from "@/modules/openai/actions";
 import { useAuth } from "@/modules/auth";
@@ -96,11 +92,13 @@ export default function ChatInterface({ messages, setMessages }: Props) {
             ))}
           </Stack>
         </MediaQuery>
+        {/* TODO: Check if we can switch over to TextArea instead */}
         <TextInput
           ref={inputRef}
           autoComplete="off"
           sx={() => ({ width: "100%" })}
           size="md"
+          placeholder="Enter a prompt above to get the conversation going 💪"
           rightSection={
             <ActionIcon
               type="submit"
@@ -113,11 +111,6 @@ export default function ChatInterface({ messages, setMessages }: Props) {
           }
           {...form.getInputProps("message")}
         />
-        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-          <Text size="sm" align="center">
-            Enter a prompt above to get the conversation going 💪
-          </Text>
-        </MediaQuery>
       </Stack>
     </form>
   );
