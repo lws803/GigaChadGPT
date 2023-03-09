@@ -20,7 +20,9 @@ export async function post(
         ...prevMessages,
         {
           role: "user",
-          content: `Speak like a giga chad. Keep the replies conversational.\n${message}`,
+          content:
+            "Speak like a giga chad. Keep the replies conversational. " +
+            `Assume you're talking to a fellow bro.\n\n${message}`,
         },
       ],
     },
