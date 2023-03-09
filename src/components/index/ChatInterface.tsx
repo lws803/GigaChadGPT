@@ -37,6 +37,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
   const { control, handleSubmit, reset, trigger } = useForm<Inputs>({
     defaultValues: { message: "" },
     resolver: yupResolver(schema),
+    reValidateMode: "onChange",
   });
 
   const { mutate, isLoading } = useMutation<
@@ -70,10 +71,6 @@ export default function ChatInterface({ messages, setMessages }: Props) {
   }, []);
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(
-      "🚀 ~ file: ChatInterface.tsx:81 ~ ChatInterface ~ mutate(data.message);:",
-      data
-    );
     mutate(data.message);
     setMessages([
       ...messages,
@@ -124,7 +121,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
                 </ActionIcon>
               }
               minRows={1}
-              maxRows={5}
+              maxRows={2}
               autosize
               error={formState.errors.message?.message?.toString()}
               onKeyDown={async (evt) => {
