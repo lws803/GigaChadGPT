@@ -7,6 +7,7 @@ import {
   ActionIcon,
   MediaQuery,
   Button,
+  Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -98,7 +99,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
         <TextInput
           ref={inputRef}
           autoComplete="off"
-          sx={() => ({ width: "100%", marginBottom: "20px" })}
+          sx={() => ({ width: "100%" })}
           size="md"
           rightSection={
             <ActionIcon
@@ -113,14 +114,9 @@ export default function ChatInterface({ messages, setMessages }: Props) {
           {...form.getInputProps("message")}
         />
         <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-          <Button
-            variant="subtle"
-            leftIcon={<IconBrandGithub size={14} />}
-            component={Link}
-            href="https://github.com/lws803/GigaChadGPT"
-          >
-            Github
-          </Button>
+          <Text size="sm" align="center">
+            Enter a prompt above to get the conversation going 💪
+          </Text>
         </MediaQuery>
       </Stack>
     </form>
