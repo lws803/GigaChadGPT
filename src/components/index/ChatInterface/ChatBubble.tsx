@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
 import { Group, Avatar, Box, Text, useMantineTheme } from "@mantine/core";
-import { ChatCompletionRequestMessage } from "openai";
 import Image from "next/image";
 import { useMediaQuery } from "@mantine/hooks";
 
-import GigaChadImage from "../../../../public/gigachad.jpg";
 import { useAuth } from "@/modules/auth";
+
+import GigaChadImage from "../../../../public/gigachad.jpg";
+import { Message } from "./types";
 
 const DICE_BEAR_AVATAR_BASE_URL = "https://api.dicebear.com/5.x/initials/svg";
 
@@ -79,5 +80,5 @@ export default function ChatBubble({ message }: Props) {
 }
 
 type Props = {
-  message: ChatCompletionRequestMessage;
+  message: Message;
 };

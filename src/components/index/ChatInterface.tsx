@@ -17,6 +17,7 @@ import { useAuth } from "@/modules/auth";
 
 import ChatBubble from "./ChatInterface/ChatBubble";
 import { Message } from "./ChatInterface/types";
+import ChatBubblePlaceholder from "./ChatInterface/ChatBubblePlaceholder";
 
 export default function ChatInterface({ messages, setMessages }: Props) {
   const { currentUser } = useAuth();
@@ -82,6 +83,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
               {messages.map((message) => (
                 <ChatBubble key={message.id} message={message} />
               ))}
+              {isLoading && <ChatBubblePlaceholder />}
             </Stack>
           </ScrollArea>
         </MediaQuery>
@@ -90,6 +92,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
             {messages.map((message) => (
               <ChatBubble key={message.id} message={message} />
             ))}
+            {isLoading && <ChatBubblePlaceholder />}
           </Stack>
         </MediaQuery>
         {/* TODO: Check if we can switch over to TextArea instead */}
