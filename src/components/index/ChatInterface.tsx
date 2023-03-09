@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import {
   Box,
   Stack,
@@ -22,6 +23,7 @@ import { Message } from "./ChatInterface/types";
 
 export default function ChatInterface({ messages, setMessages }: Props) {
   const { currentUser } = useAuth();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm({
     initialValues: { message: "" },
@@ -61,6 +63,10 @@ export default function ChatInterface({ messages, setMessages }: Props) {
     },
   });
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <form
       onSubmit={form.onSubmit((values) => {
@@ -91,6 +97,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
             </Stack>
           </MediaQuery>
           <TextInput
+            ref={inputRef}
             autoComplete="off"
             sx={() => ({ width: "100%", marginBottom: "20px" })}
             size="md"
@@ -99,8 +106,9 @@ export default function ChatInterface({ messages, setMessages }: Props) {
                 type="submit"
                 loading={isLoading}
                 disabled={!form.isValid}
+                size="md"
               >
-                <IconSend size={14} />
+                <IconSend size={16} />
               </ActionIcon>
             }
             {...form.getInputProps("message")}
