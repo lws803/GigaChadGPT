@@ -2,15 +2,17 @@ import { useRef, useEffect } from "react";
 import {
   Stack,
   ScrollArea,
-  TextInput,
   ActionIcon,
   MediaQuery,
+  Textarea,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { post } from "@/modules/openai/actions";
 import { useAuth } from "@/modules/auth";
@@ -19,20 +21,22 @@ import ChatBubble from "./ChatInterface/ChatBubble";
 import { Message } from "./ChatInterface/types";
 import ChatBubblePlaceholder from "./ChatInterface/ChatBubblePlaceholder";
 
+const schema = yup
+  .object()
+  .shape({
+    message: yup.string().required().max(1024),
+  })
+  .required();
+
+type Inputs = { message: string };
+
 export default function ChatInterface({ messages, setMessages }: Props) {
   const { currentUser } = useAuth();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const form = useForm({
-    initialValues: { message: "" },
-    validate: {
-      message: (message) =>
-        message === ""
-          ? "Message cannot be empty"
-          : !currentUser
-          ? "Sign in to start chatting..."
-          : null,
-    },
+  const { control, handleSubmit, reset, trigger } = useForm<Inputs>({
+    defaultValues: { message: "" },
+    resolver: yupResolver(schema),
   });
 
   const { mutate, isLoading } = useMutation<
@@ -65,17 +69,21 @@ export default function ChatInterface({ messages, setMessages }: Props) {
     inputRef.current?.focus();
   }, []);
 
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(
+      "🚀 ~ file: ChatInterface.tsx:81 ~ ChatInterface ~ mutate(data.message);:",
+      data
+    );
+    mutate(data.message);
+    setMessages([
+      ...messages,
+      { role: "user", content: data.message, id: uuidv4() },
+    ]);
+    reset();
+  };
+
   return (
-    <form
-      onSubmit={form.onSubmit((values) => {
-        mutate(values.message);
-        setMessages([
-          ...messages,
-          { role: "user", content: values.message, id: uuidv4() },
-        ]);
-        form.reset();
-      })}
-    >
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Stack>
         <MediaQuery styles={{ display: "none" }} smallerThan="sm">
           <ScrollArea h={"calc(100vh - 120px)"}>
@@ -95,24 +103,39 @@ export default function ChatInterface({ messages, setMessages }: Props) {
             {isLoading && <ChatBubblePlaceholder />}
           </Stack>
         </MediaQuery>
-        {/* TODO: Check if we can switch over to TextArea instead */}
-        <TextInput
-          ref={inputRef}
-          autoComplete="off"
-          sx={() => ({ width: "100%" })}
-          size="md"
-          placeholder="Enter a prompt above to get the conversation going 💪"
-          rightSection={
-            <ActionIcon
-              type="submit"
-              loading={isLoading}
-              disabled={!form.isValid}
+        <Controller
+          name="message"
+          control={control}
+          render={({ field, formState }) => (
+            <Textarea
+              {...field}
+              placeholder="Enter a prompt above to get the conversation going 💪"
+              autoComplete="off"
+              sx={() => ({ width: "100%" })}
               size="md"
-            >
-              <IconSend size={16} />
-            </ActionIcon>
-          }
-          {...form.getInputProps("message")}
+              rightSection={
+                <ActionIcon
+                  type="submit"
+                  loading={isLoading}
+                  disabled={!formState.isValid}
+                  size="md"
+                >
+                  <IconSend size={16} />
+                </ActionIcon>
+              }
+              minRows={1}
+              maxRows={5}
+              autosize
+              error={formState.errors.message?.message?.toString()}
+              onKeyDown={async (evt) => {
+                if (evt.key === "Enter" && !evt.shiftKey) {
+                  evt.preventDefault();
+                  const result = await trigger();
+                  result && onSubmit({ message: field.value });
+                }
+              }}
+            />
+          )}
         />
       </Stack>
     </form>

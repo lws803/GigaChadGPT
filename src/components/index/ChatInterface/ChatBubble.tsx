@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Group, Avatar, Box, Text, useMantineTheme } from "@mantine/core";
+import { Group, Avatar, Box, useMantineTheme, Textarea } from "@mantine/core";
 import Image from "next/image";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -71,9 +71,24 @@ export default function ChatBubble({ message }: Props) {
             />
           )}
         </Avatar>
-        <Text mt="4px" size="md">
+        <Textarea
+          mt="4px"
+          size="md"
+          readOnly
+          sx={() => ({
+            width: "100%",
+            userSelect: "none",
+            ".mantine-Textarea-input": {
+              border: "none",
+              background: "inherit",
+              overflowY: "hidden",
+              padding: "0px",
+            },
+          })}
+          autosize
+        >
           {message.content}
-        </Text>
+        </Textarea>
       </Group>
     </Box>
   );

@@ -29,6 +29,8 @@ export async function post(
     { headers: { Authorization: userToken } }
   );
 
+  // TODO: Do a bit of string processing here to remove white spaces or commas which can sometimes
+  // appear at the start of a sentence.
   return {
     content: response.data.choices[0].message?.content || null,
     id: response.data.id,
