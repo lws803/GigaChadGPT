@@ -67,7 +67,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
         <Stack>
           <ScrollArea h="calc(100vh - 120px)">
             <Stack spacing={0}>
-              {messages.reverse().map((message) => (
+              {messages.map((message) => (
                 <ChatBubble key={message.id} message={message} />
               ))}
             </Stack>
