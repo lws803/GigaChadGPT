@@ -4,26 +4,6 @@ import GigaChadImage from "../../../public/gigachad.jpg";
 import UWUImage from "../../../public/uwu.jpg";
 import SingaporeImage from "../../../public/singapore.png";
 
-function getGigaChadPrompts(message: string) {
-  return (
-    "Speak like a giga chad. Keep the replies conversational. " +
-    `Assume you're talking to a fellow bro.\n\n${message}`
-  );
-}
-
-function getUWUPrompts(message: string) {
-  return (
-    "Speak like an uwu. Keep the replies conversational." + `\n\n${message}`
-  );
-}
-
-function getSinglishPrompts(message: string) {
-  return (
-    "Speak in Singlish. Pretend you are a native Singaporean. Keep the replies conversational." +
-    `\n\n${message}`
-  );
-}
-
 const PERSONAS = ["gigachad", "uwu", "singlish"];
 
 export type Persona = "gigachad" | "uwu" | "singlish";
@@ -34,10 +14,12 @@ export const Persona = {
   },
 };
 
-export const personas: Record<Persona, (message: string) => string> = {
-  gigachad: getGigaChadPrompts,
-  uwu: getUWUPrompts,
-  singlish: getSinglishPrompts,
+export const personas: Record<Persona, string> = {
+  gigachad:
+    "Speak like a giga chad. Keep the replies conversational. Assume you're talking to a fellow bro.",
+  uwu: "Speak like an uwu. Keep the replies conversational.",
+  singlish:
+    "Speak in Singlish. Pretend you are a native Singaporean. Keep the replies conversational.",
 };
 
 export const personaDropdownChoices: Array<{ value: Persona; label: string }> =

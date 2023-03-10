@@ -7,4 +7,5 @@ export const postMessageSchema = z.object({
       content: z.string(),
     })
   ),
+  persona: z.string(),
 });

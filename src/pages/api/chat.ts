@@ -6,6 +6,7 @@ import status from "http-status";
 import { getFirebaseApp } from "@/api/shared/firebaseApp";
 import { verifyIdToken } from "@/api/shared/auth";
 import { errorHandler } from "@/api/shared/handler";
+import { personas, Persona } from "@/modules/openai/personas";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,7 +26,18 @@ export default async function handler(
 
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
-        messages: parsedReqBody.messages,
+        messages: [
+          {
+            role: "system",
+            content:
+              personas[
+                Persona.is(parsedReqBody.persona)
+                  ? parsedReqBody.persona
+                  : "gigachad"
+              ],
+          },
+          ...parsedReqBody.messages,
+        ],
       });
 
       return res.status(status.OK).json(response.data);

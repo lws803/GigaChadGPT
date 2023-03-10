@@ -4,7 +4,7 @@ import {
   CreateChatCompletionResponse,
 } from "openai";
 
-import { Persona, personas } from "./personas";
+import { Persona } from "./personas";
 
 export async function post(
   message: string,
@@ -15,7 +15,7 @@ export async function post(
   const response = await axios.post<
     unknown,
     AxiosResponse<CreateChatCompletionResponse>,
-    { messages: ChatCompletionRequestMessage[] }
+    { messages: ChatCompletionRequestMessage[]; persona: Persona }
   >(
     "/api/chat",
     {
@@ -23,9 +23,10 @@ export async function post(
         ...prevMessages,
         {
           role: "user",
-          content: personas[persona](message),
+          content: message,
         },
       ],
+      persona,
     },
     { headers: { Authorization: userToken }, timeout: 30000 }
   );
