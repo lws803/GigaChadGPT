@@ -86,7 +86,7 @@ export default function ChatInterface({
       sx={() => ({ position: "relative", height: "100%", overflow: "hidden" })}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ScrollArea h={`calc(100vh - 180px)`}>
+        <ScrollArea h={`calc(100vh - ${isSmallScreen ? 250 : 180}px)`}>
           <Stack spacing={0}>
             {messages.map((message) => (
               <ChatBubble
@@ -106,6 +106,7 @@ export default function ChatInterface({
             width: "100%",
           })}
         >
+          {/* TODO: Continue fixing the mobile interface */}
           <Controller
             name="message"
             control={control}
