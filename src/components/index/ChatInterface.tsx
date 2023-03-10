@@ -5,6 +5,7 @@ import {
   ActionIcon,
   MediaQuery,
   Textarea,
+  Box,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
@@ -21,6 +22,7 @@ import ChatBubble from "./ChatInterface/ChatBubble";
 import { Message } from "./ChatInterface/types";
 import ChatBubblePlaceholder from "./ChatInterface/ChatBubblePlaceholder";
 import { Persona } from "@/modules/openai/personas";
+import { useMediaQuery } from "@mantine/hooks";
 
 const schema = yup
   .object()
@@ -38,6 +40,7 @@ export default function ChatInterface({
 }: Props) {
   const { currentUser } = useAuth();
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const isSmallScreen = useMediaQuery("(max-width:768px)");
 
   const { control, handleSubmit, reset, trigger } = useForm<Inputs>({
     defaultValues: { message: "" },
@@ -86,23 +89,9 @@ export default function ChatInterface({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack>
-        <MediaQuery styles={{ display: "none" }} smallerThan="sm">
-          <ScrollArea h={"calc(100vh - 120px)"}>
-            <Stack spacing={0}>
-              {messages.map((message) => (
-                <ChatBubble
-                  key={message.id}
-                  message={message}
-                  persona={persona}
-                />
-              ))}
-              {isLoading && <ChatBubblePlaceholder persona={persona} />}
-            </Stack>
-          </ScrollArea>
-        </MediaQuery>
-        <MediaQuery styles={{ display: "none" }} largerThan="sm">
+    <Box sx={() => ({ position: "relative", height: "100%" })}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <ScrollArea h={"calc(100vh - 180px)"}>
           <Stack spacing={0}>
             {messages.map((message) => (
               <ChatBubble
@@ -113,44 +102,53 @@ export default function ChatInterface({
             ))}
             {isLoading && <ChatBubblePlaceholder persona={persona} />}
           </Stack>
-        </MediaQuery>
-        <Controller
-          name="message"
-          control={control}
-          render={({ field, formState }) => (
-            <Textarea
-              {...field}
-              disabled={isLoading}
-              placeholder="Enter a prompt above to get the conversation going 💪"
-              autoComplete="off"
-              sx={() => ({ width: "100%" })}
-              size="md"
-              rightSection={
-                <ActionIcon
-                  type="submit"
-                  loading={isLoading}
-                  disabled={!formState.isValid}
-                  size="md"
-                >
-                  <IconSend size={16} />
-                </ActionIcon>
-              }
-              minRows={1}
-              maxRows={2}
-              autosize
-              error={formState.errors.message?.message?.toString()}
-              onKeyDown={async (evt) => {
-                if (evt.key === "Enter" && !evt.shiftKey) {
-                  evt.preventDefault();
-                  const result = await trigger();
-                  result && onSubmit({ message: field.value });
+        </ScrollArea>
+        <Box
+          sx={() => ({
+            position: "absolute",
+            bottom: "10px",
+            left: "0px",
+            width: "100%",
+          })}
+        >
+          <Controller
+            name="message"
+            control={control}
+            render={({ field, formState }) => (
+              <Textarea
+                {...field}
+                disabled={isLoading}
+                placeholder="Enter a prompt above to get the conversation going 💪"
+                autoComplete="off"
+                sx={() => ({ width: "100%" })}
+                size="md"
+                rightSection={
+                  <ActionIcon
+                    type="submit"
+                    loading={isLoading}
+                    disabled={!formState.isValid}
+                    size="md"
+                  >
+                    <IconSend size={16} />
+                  </ActionIcon>
                 }
-              }}
-            />
-          )}
-        />
-      </Stack>
-    </form>
+                minRows={isSmallScreen ? 1 : 4}
+                maxRows={4}
+                autosize
+                error={formState.errors.message?.message?.toString()}
+                onKeyDown={async (evt) => {
+                  if (evt.key === "Enter" && !evt.shiftKey) {
+                    evt.preventDefault();
+                    const result = await trigger();
+                    result && onSubmit({ message: field.value });
+                  }
+                }}
+              />
+            )}
+          />
+        </Box>
+      </form>
+    </Box>
   );
 }
 
