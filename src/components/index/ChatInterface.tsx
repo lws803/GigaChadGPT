@@ -90,7 +90,7 @@ export default function ChatInterface({
   return (
     <Box sx={() => ({ position: "relative", height: "100%" })}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ScrollArea h={`calc(${realWindowHeight} - 180px)`}>
+        <ScrollArea h={`calc(${realWindowHeight}px - 180px)`}>
           <Stack spacing={0}>
             {messages.map((message) => (
               <ChatBubble
@@ -105,7 +105,7 @@ export default function ChatInterface({
         <Box
           sx={() => ({
             position: "absolute",
-            bottom: `calc(100vh - ${realWindowHeight}px + 30px)`,
+            bottom: `calc(100vh - ${realWindowHeight}px + 10px)`,
             left: "0px",
             width: "100%",
           })}
