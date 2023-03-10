@@ -1,12 +1,5 @@
 import { useRef, useEffect } from "react";
-import {
-  Stack,
-  ScrollArea,
-  ActionIcon,
-  MediaQuery,
-  Textarea,
-  Box,
-} from "@mantine/core";
+import { Stack, ScrollArea, ActionIcon, Textarea, Box } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
