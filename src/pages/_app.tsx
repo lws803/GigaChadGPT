@@ -14,6 +14,8 @@ import { getAnalytics } from "firebase/analytics";
 import getFirebase from "@/shared/getFirebase";
 import { AuthContext } from "@/modules/auth";
 
+import "../styles/globalStyles.css";
+
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient();
 

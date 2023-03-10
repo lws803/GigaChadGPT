@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { Stack, ScrollArea, ActionIcon, Textarea, Box } from "@mantine/core";
+import { Stack, ActionIcon, Textarea, Box } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
@@ -82,69 +82,64 @@ export default function ChatInterface({
   };
 
   return (
-    <Box
-      sx={() => ({ position: "relative", height: "100%", overflow: "hidden" })}
-    >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <ScrollArea h={`calc(100vh - ${isSmallScreen ? 250 : 180}px)`}>
-          <Stack spacing={0}>
-            {messages.map((message) => (
-              <ChatBubble
-                key={message.id}
-                message={message}
-                persona={persona}
-              />
-            ))}
-            {isLoading && <ChatBubblePlaceholder persona={persona} />}
-          </Stack>
-        </ScrollArea>
-        <Box
-          sx={() => ({
-            position: "absolute",
-            bottom: "10px",
-            left: "0px",
-            width: "100%",
-          })}
-        >
-          {/* TODO: Continue fixing the mobile interface */}
-          <Controller
-            name="message"
-            control={control}
-            render={({ field, formState }) => (
-              <Textarea
-                {...field}
-                disabled={isLoading}
-                placeholder="Enter a prompt above to get the conversation going 💪"
-                autoComplete="off"
-                sx={() => ({ width: "100%" })}
-                size="md"
-                rightSection={
-                  <ActionIcon
-                    type="submit"
-                    loading={isLoading}
-                    disabled={!formState.isValid}
-                    size="md"
-                  >
-                    <IconSend size={16} />
-                  </ActionIcon>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Stack spacing={0} pb={`${isSmallScreen ? 100 : 180}px`}>
+        {messages.map((message) => (
+          <ChatBubble key={message.id} message={message} persona={persona} />
+        ))}
+        {isLoading && <ChatBubblePlaceholder persona={persona} />}
+      </Stack>
+
+      <Box
+        sx={(theme) => ({
+          width: "100%",
+          position: "fixed",
+          bottom: "0px",
+          left: "0px",
+          paddingLeft: "calc(var(--mantine-navbar-width, 0px) + 1rem)",
+          paddingRight: "calc(var(--mantine-aside-width, 0px) + 1rem)",
+          paddingBottom: "20px",
+          paddingTop: "20px",
+          backgroundColor:
+            theme.colorScheme === "dark" ? theme.colors.dark[7] : "#fff",
+        })}
+      >
+        <Controller
+          name="message"
+          control={control}
+          render={({ field, formState }) => (
+            <Textarea
+              {...field}
+              placeholder="Enter a prompt above to get the conversation going 💪"
+              autoComplete="off"
+              sx={() => ({ width: "100%" })}
+              size="md"
+              rightSection={
+                <ActionIcon
+                  type="submit"
+                  loading={isLoading}
+                  disabled={!formState.isValid}
+                  size="md"
+                >
+                  <IconSend size={16} />
+                </ActionIcon>
+              }
+              minRows={isSmallScreen ? 1 : 4}
+              maxRows={4}
+              autosize
+              error={formState.errors.message?.message?.toString()}
+              onKeyDown={async (evt) => {
+                if (evt.key === "Enter" && !evt.shiftKey) {
+                  evt.preventDefault();
+                  const result = await trigger();
+                  result && onSubmit({ message: field.value });
                 }
-                minRows={isSmallScreen ? 1 : 4}
-                maxRows={4}
-                autosize
-                error={formState.errors.message?.message?.toString()}
-                onKeyDown={async (evt) => {
-                  if (evt.key === "Enter" && !evt.shiftKey) {
-                    evt.preventDefault();
-                    const result = await trigger();
-                    result && onSubmit({ message: field.value });
-                  }
-                }}
-              />
-            )}
-          />
-        </Box>
-      </form>
-    </Box>
+              }}
+            />
+          )}
+        />
+      </Box>
+    </form>
   );
 }
 
