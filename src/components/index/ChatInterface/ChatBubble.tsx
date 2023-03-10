@@ -4,13 +4,13 @@ import Image from "next/image";
 import { useMediaQuery } from "@mantine/hooks";
 
 import { useAuth } from "@/modules/auth";
+import { Persona, personaProfileImages } from "@/modules/openai/personas";
 
-import GigaChadImage from "../../../../public/gigachad.jpg";
 import { Message } from "./types";
 
 const DICE_BEAR_AVATAR_BASE_URL = "https://api.dicebear.com/5.x/initials/svg";
 
-export default function ChatBubble({ message }: Props) {
+export default function ChatBubble({ message, persona }: Props) {
   const theme = useMantineTheme();
   const ref = useRef<HTMLDivElement>(null);
   const isSmallScreen = useMediaQuery("(max-width:768px)");
@@ -52,8 +52,8 @@ export default function ChatBubble({ message }: Props) {
               width={38}
               height={38}
               style={{ objectFit: "cover" }}
-              src={GigaChadImage}
-              alt="Giga chad avatar"
+              src={personaProfileImages[persona]}
+              alt={`${persona} avatar`}
               priority
             />
           ) : (
@@ -86,9 +86,8 @@ export default function ChatBubble({ message }: Props) {
             },
           })}
           autosize
-        >
-          {message.content}
-        </Textarea>
+          value={message.content}
+        />
       </Group>
     </Box>
   );
@@ -96,4 +95,5 @@ export default function ChatBubble({ message }: Props) {
 
 type Props = {
   message: Message;
+  persona: Persona;
 };

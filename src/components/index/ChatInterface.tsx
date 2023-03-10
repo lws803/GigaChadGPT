@@ -20,6 +20,7 @@ import { useAuth } from "@/modules/auth";
 import ChatBubble from "./ChatInterface/ChatBubble";
 import { Message } from "./ChatInterface/types";
 import ChatBubblePlaceholder from "./ChatInterface/ChatBubblePlaceholder";
+import { Persona } from "@/modules/openai/personas";
 
 const schema = yup
   .object()
@@ -30,7 +31,11 @@ const schema = yup
 
 type Inputs = { message: string };
 
-export default function ChatInterface({ messages, setMessages }: Props) {
+export default function ChatInterface({
+  messages,
+  setMessages,
+  persona,
+}: Props) {
   const { currentUser } = useAuth();
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -49,7 +54,8 @@ export default function ChatInterface({ messages, setMessages }: Props) {
       post(
         data,
         messages.slice(0, -1),
-        (await currentUser?.getIdToken()) || ""
+        (await currentUser?.getIdToken()) || "",
+        persona
       ),
     onSuccess: (data) => {
       setMessages([
@@ -86,18 +92,26 @@ export default function ChatInterface({ messages, setMessages }: Props) {
           <ScrollArea h={"calc(100vh - 120px)"}>
             <Stack spacing={0}>
               {messages.map((message) => (
-                <ChatBubble key={message.id} message={message} />
+                <ChatBubble
+                  key={message.id}
+                  message={message}
+                  persona={persona}
+                />
               ))}
-              {isLoading && <ChatBubblePlaceholder />}
+              {isLoading && <ChatBubblePlaceholder persona={persona} />}
             </Stack>
           </ScrollArea>
         </MediaQuery>
         <MediaQuery styles={{ display: "none" }} largerThan="sm">
           <Stack spacing={0}>
             {messages.map((message) => (
-              <ChatBubble key={message.id} message={message} />
+              <ChatBubble
+                key={message.id}
+                message={message}
+                persona={persona}
+              />
             ))}
-            {isLoading && <ChatBubblePlaceholder />}
+            {isLoading && <ChatBubblePlaceholder persona={persona} />}
           </Stack>
         </MediaQuery>
         <Controller
@@ -106,6 +120,7 @@ export default function ChatInterface({ messages, setMessages }: Props) {
           render={({ field, formState }) => (
             <Textarea
               {...field}
+              disabled={isLoading}
               placeholder="Enter a prompt above to get the conversation going 💪"
               autoComplete="off"
               sx={() => ({ width: "100%" })}
@@ -141,5 +156,6 @@ export default function ChatInterface({ messages, setMessages }: Props) {
 
 type Props = {
   messages: Message[];
+  persona: Persona;
   setMessages: (messages: Message[]) => void;
 };

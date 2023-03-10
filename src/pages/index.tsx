@@ -8,11 +8,13 @@ import { useAuth } from "@/modules/auth";
 import ChatInterface from "@/components/index/ChatInterface";
 import Nav from "@/components/shared/Nav";
 import Header from "@/components/shared/Header";
+import { Persona } from "@/modules/openai/personas";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const { signIn, authState } = useAuth();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [persona, setPersona] = useState<Persona>("gigachad");
 
   return (
     <AppShell
@@ -22,6 +24,7 @@ export default function Home() {
           isMenuOpened={isMenuOpened}
           setMessages={setMessages}
           setIsMenuOpened={setIsMenuOpened}
+          setPersona={setPersona}
         />
       }
       styles={(theme) => ({
@@ -41,7 +44,11 @@ export default function Home() {
           <GoogleButton onClick={signIn}>Sign in</GoogleButton>
         </Center>
       ) : (
-        <ChatInterface messages={messages} setMessages={setMessages} />
+        <ChatInterface
+          messages={messages}
+          setMessages={setMessages}
+          persona={persona}
+        />
       )}
     </AppShell>
   );

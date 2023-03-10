@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   useMantineColorScheme,
+  Select,
 } from "@mantine/core";
 import {
   IconPlus,
@@ -16,6 +17,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { useAuth } from "@/modules/auth";
+import { Persona, PersonaDropdownChoices } from "@/modules/openai/personas";
 
 import { Message } from "../index/ChatInterface/types";
 
@@ -23,6 +25,7 @@ export default function Nav({
   isMenuOpened,
   setMessages,
   setIsMenuOpened,
+  setPersona,
 }: Props) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { currentUser, signIn, signOut } = useAuth();
@@ -35,22 +38,35 @@ export default function Nav({
       width={{ sm: 300, lg: 300 }}
     >
       <Stack sx={() => ({ justifyContent: "space-between", height: "100%" })}>
-        <Button
-          size="md"
-          variant="outline"
-          leftIcon={<IconPlus size={16} />}
-          onClick={() => {
-            setMessages([]);
-            setIsMenuOpened(false);
-          }}
-          sx={() => ({
-            ".mantine-Button-inner": {
-              justifyContent: "start",
-            },
-          })}
-        >
-          New chat
-        </Button>
+        <Stack>
+          <Button
+            size="md"
+            variant="outline"
+            leftIcon={<IconPlus size={16} />}
+            onClick={() => {
+              setMessages([]);
+              setIsMenuOpened(false);
+            }}
+            sx={() => ({
+              ".mantine-Button-inner": {
+                justifyContent: "start",
+              },
+            })}
+          >
+            New chat
+          </Button>
+          <Select
+            label="Persona"
+            placeholder="Pick a persona"
+            defaultValue="gigachad"
+            data={PersonaDropdownChoices}
+            onChange={(data) => {
+              if (!data) return;
+              setPersona(Persona.is(data) ? data : "gigachad");
+              setMessages([]);
+            }}
+          />
+        </Stack>
         <Stack>
           <Divider />
           <Button
@@ -117,4 +133,5 @@ type Props = {
   isMenuOpened: boolean;
   setMessages: (messages: Message[]) => void;
   setIsMenuOpened: (isOpened: boolean) => void;
+  setPersona: (persona: Persona) => void;
 };

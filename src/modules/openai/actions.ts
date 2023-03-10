@@ -4,10 +4,13 @@ import {
   CreateChatCompletionResponse,
 } from "openai";
 
+import { Persona, personas } from "./personas";
+
 export async function post(
   message: string,
   prevMessages: ChatCompletionRequestMessage[],
-  userToken: string
+  userToken: string,
+  persona: Persona
 ) {
   const response = await axios.post<
     unknown,
@@ -20,9 +23,7 @@ export async function post(
         ...prevMessages,
         {
           role: "user",
-          content:
-            "Speak like a giga chad. Keep the replies conversational. " +
-            `Assume you're talking to a fellow bro.\n\n${message}`,
+          content: personas[persona](message),
         },
       ],
     },
