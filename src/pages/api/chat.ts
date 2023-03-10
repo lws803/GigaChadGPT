@@ -8,6 +8,8 @@ import { verifyIdToken } from "@/api/shared/auth";
 import { errorHandler } from "@/api/shared/handler";
 import { personas, Persona } from "@/modules/openai/personas";
 
+export const config = { runtime: "edge" };
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<CreateChatCompletionResponse>
@@ -39,6 +41,7 @@ export default async function handler(
           ...parsedReqBody.messages,
         ],
       });
+      console.log("🚀 ~ file: chat.ts:42 ~ response:", response);
 
       return res.status(status.OK).json(response.data);
     }
