@@ -56,6 +56,10 @@ export default function Nav({
             New chat
           </Button>
           <Select
+            sx={() => ({
+              ".mantine-Select-label": { marginBottom: "2px" },
+            })}
+            size="md"
             label="Persona"
             placeholder="Pick a persona"
             defaultValue="gigachad"
