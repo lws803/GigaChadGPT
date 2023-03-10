@@ -17,18 +17,19 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { useAuth } from "@/modules/auth";
-import { Persona, PersonaDropdownChoices } from "@/modules/openai/personas";
+import { Persona, personaDropdownChoices } from "@/modules/openai/personas";
 
 import { Message } from "../index/ChatInterface/types";
+import { useRouter } from "next/router";
 
 export default function Nav({
   isMenuOpened,
   setMessages,
   setIsMenuOpened,
-  setPersona,
 }: Props) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { currentUser, signIn, signOut } = useAuth();
+  const router = useRouter();
 
   return (
     <Navbar
@@ -63,10 +64,11 @@ export default function Nav({
             label="Persona"
             placeholder="Pick a persona"
             defaultValue="gigachad"
-            data={PersonaDropdownChoices}
+            data={personaDropdownChoices}
             onChange={(data) => {
               if (!data) return;
-              setPersona(Persona.is(data) ? data : "gigachad");
+              const persona = Persona.is(data) ? data : "gigachad";
+              router.push({ query: { persona } });
               setMessages([]);
             }}
           />
@@ -137,5 +139,4 @@ type Props = {
   isMenuOpened: boolean;
   setMessages: (messages: Message[]) => void;
   setIsMenuOpened: (isOpened: boolean) => void;
-  setPersona: (persona: Persona) => void;
 };

@@ -40,7 +40,7 @@ export const personas: Record<Persona, (message: string) => string> = {
   singlish: getSinglishPrompts,
 };
 
-export const PersonaDropdownChoices: Array<{ value: Persona; label: string }> =
+export const personaDropdownChoices: Array<{ value: Persona; label: string }> =
   [
     { value: "gigachad", label: "giga chad" },
     { value: "uwu", label: "uwu" },

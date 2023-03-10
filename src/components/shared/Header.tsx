@@ -4,21 +4,39 @@ import {
   Group,
   Header as MantineHeader,
   MediaQuery,
+  Title,
 } from "@mantine/core";
 
-export default function Header({ isMenuOpened, setIsMenuOpened }: Props) {
+import { Persona, personaDropdownChoices } from "@/modules/openai/personas";
+
+export default function Header({
+  isMenuOpened,
+  setIsMenuOpened,
+  persona,
+}: Props) {
   return (
     <MediaQuery styles={{ display: "none" }} largerThan="sm">
       <MantineHeader height={{ base: 60, md: 0, sm: 0 }} p="md">
-        <Group sx={() => ({ justifyContent: "flex-start", width: "100%" })}>
-          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-            <Burger
-              opened={isMenuOpened}
-              onClick={() => setIsMenuOpened((o) => !o)}
-              size="sm"
-              mr="xl"
-            />
-          </MediaQuery>
+        <Group sx={() => ({ justifyContent: "space-between", width: "100%" })}>
+          <Burger
+            opened={isMenuOpened}
+            onClick={() => setIsMenuOpened((o) => !o)}
+            size="sm"
+            mr="xl"
+          />
+          <Title order={5}>
+            {
+              personaDropdownChoices.find(
+                (currPersona) => currPersona.value === persona
+              )?.label
+            }
+          </Title>
+          <Burger
+            sx={() => ({ visibility: "hidden" })}
+            opened={false}
+            size="sm"
+            mr="xl"
+          />
         </Group>
       </MantineHeader>
     </MediaQuery>
@@ -28,4 +46,5 @@ export default function Header({ isMenuOpened, setIsMenuOpened }: Props) {
 type Props = {
   isMenuOpened: boolean;
   setIsMenuOpened: (value: SetStateAction<boolean>) => void;
+  persona: Persona;
 };

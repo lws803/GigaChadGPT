@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppShell, Center } from "@mantine/core";
 import GoogleButton from "react-google-button";
 
@@ -9,12 +9,24 @@ import ChatInterface from "@/components/index/ChatInterface";
 import Nav from "@/components/shared/Nav";
 import Header from "@/components/shared/Header";
 import { Persona } from "@/modules/openai/personas";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const { signIn, authState } = useAuth();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const [persona, setPersona] = useState<Persona>("gigachad");
+
+  const { query, push } = useRouter();
+
+  useEffect(() => {
+    const queryPersona = query.persona?.toString();
+    if (queryPersona && Persona.is(queryPersona)) {
+      setPersona(queryPersona);
+      return;
+    }
+    push({ query: { persona: "gigachad" } });
+  }, [push, query.persona]);
 
   return (
     <AppShell
@@ -24,7 +36,6 @@ export default function Home() {
           isMenuOpened={isMenuOpened}
           setMessages={setMessages}
           setIsMenuOpened={setIsMenuOpened}
-          setPersona={setPersona}
         />
       }
       styles={(theme) => ({
@@ -36,7 +47,11 @@ export default function Home() {
         },
       })}
       header={
-        <Header isMenuOpened={isMenuOpened} setIsMenuOpened={setIsMenuOpened} />
+        <Header
+          isMenuOpened={isMenuOpened}
+          setIsMenuOpened={setIsMenuOpened}
+          persona={persona}
+        />
       }
     >
       {authState === "signedOut" ? (
