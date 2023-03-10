@@ -16,7 +16,6 @@ import { Message } from "./ChatInterface/types";
 import ChatBubblePlaceholder from "./ChatInterface/ChatBubblePlaceholder";
 import { Persona } from "@/modules/openai/personas";
 import { useMediaQuery } from "@mantine/hooks";
-import { use100vh } from "react-div-100vh";
 
 const schema = yup
   .object()
@@ -35,11 +34,6 @@ export default function ChatInterface({
   const { currentUser } = useAuth();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const isSmallScreen = useMediaQuery("(max-width:768px)");
-  const realWindowHeight = use100vh();
-  console.log(
-    "🚀 ~ file: ChatInterface.tsx:39 ~ realWindowHeight:",
-    realWindowHeight
-  );
 
   const { control, handleSubmit, reset, trigger } = useForm<Inputs>({
     defaultValues: { message: "" },
@@ -88,9 +82,11 @@ export default function ChatInterface({
   };
 
   return (
-    <Box sx={() => ({ position: "relative", height: "100%" })}>
+    <Box
+      sx={() => ({ position: "relative", height: "100%", overflow: "hidden" })}
+    >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ScrollArea h={`calc(${realWindowHeight}px - 180px)`}>
+        <ScrollArea h={`calc(100vh - 180px)`}>
           <Stack spacing={0}>
             {messages.map((message) => (
               <ChatBubble
@@ -105,7 +101,7 @@ export default function ChatInterface({
         <Box
           sx={() => ({
             position: "absolute",
-            bottom: `calc(100vh - ${realWindowHeight}px + 10px)`,
+            bottom: "10px",
             left: "0px",
             width: "100%",
           })}

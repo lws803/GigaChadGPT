@@ -58,7 +58,7 @@ export default function Home({
       }
     >
       {authState === "signedOut" ? (
-        <Center h="100vh">
+        <Center h="calc(100vh - 100px)">
           <GoogleButton onClick={signIn}>Sign in</GoogleButton>
         </Center>
       ) : (
