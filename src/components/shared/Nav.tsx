@@ -26,6 +26,7 @@ export default function Nav({
   isMenuOpened,
   setMessages,
   setIsMenuOpened,
+  persona,
 }: Props) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { currentUser, signIn, signOut } = useAuth();
@@ -64,6 +65,7 @@ export default function Nav({
             label="Persona"
             placeholder="Pick a persona"
             defaultValue="gigachad"
+            value={persona}
             data={personaDropdownChoices}
             onChange={(data) => {
               if (!data) return;
@@ -139,4 +141,5 @@ type Props = {
   isMenuOpened: boolean;
   setMessages: (messages: Message[]) => void;
   setIsMenuOpened: (isOpened: boolean) => void;
+  persona: Persona;
 };

@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
-import { useState, useEffect } from "react";
+import { InferGetServerSidePropsType } from "next";
+import { useState } from "react";
 import { AppShell, Center } from "@mantine/core";
 import GoogleButton from "react-google-button";
 
@@ -9,24 +9,26 @@ import ChatInterface from "@/components/index/ChatInterface";
 import Nav from "@/components/shared/Nav";
 import Header from "@/components/shared/Header";
 import { Persona } from "@/modules/openai/personas";
-import { useRouter } from "next/router";
 
-export default function Home() {
+export function getServerSideProps({
+  query,
+}: {
+  query: { persona: Persona };
+}): { props: { persona: Persona } } {
+  const queryPersona = query?.persona;
+  if (queryPersona && Persona.is(queryPersona)) {
+    return { props: { persona: queryPersona } };
+  }
+
+  return { props: { persona: "gigachad" } };
+}
+
+export default function Home({
+  persona,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [messages, setMessages] = useState<Message[]>([]);
   const { signIn, authState } = useAuth();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [persona, setPersona] = useState<Persona>("gigachad");
-
-  const { query, push } = useRouter();
-
-  useEffect(() => {
-    const queryPersona = query.persona?.toString();
-    if (queryPersona && Persona.is(queryPersona)) {
-      setPersona(queryPersona);
-      return;
-    }
-    push({ query: { persona: "gigachad" } });
-  }, [push, query.persona]);
 
   return (
     <AppShell
@@ -36,6 +38,7 @@ export default function Home() {
           isMenuOpened={isMenuOpened}
           setMessages={setMessages}
           setIsMenuOpened={setIsMenuOpened}
+          persona={persona}
         />
       }
       styles={(theme) => ({
