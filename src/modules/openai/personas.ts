@@ -4,20 +4,20 @@ import GigaChadImage from "../../../public/gigachad.jpg";
 import UWUImage from "../../../public/uwu.jpg";
 import SingaporeImage from "../../../public/singapore.png";
 
-export function getGigaChadPrompts(message: string) {
+function getGigaChadPrompts(message: string) {
   return (
     "Speak like a giga chad. Keep the replies conversational. " +
     `Assume you're talking to a fellow bro.\n\n${message}`
   );
 }
 
-export function getUWUPrompts(message: string) {
+function getUWUPrompts(message: string) {
   return (
     "Speak like an uwu. Keep the replies conversational." + `\n\n${message}`
   );
 }
 
-export function getSinglishPrompts(message: string) {
+function getSinglishPrompts(message: string) {
   return (
     "Speak in Singlish. Pretend you are a native Singaporean. Keep the replies conversational." +
     `\n\n${message}`
