@@ -1,49 +1,68 @@
-import { postMessageSchema } from "@/api/chat/schema";
-import { Configuration, CreateChatCompletionResponse, OpenAIApi } from "openai";
-import type { NextApiRequest, NextApiResponse } from "next";
 import status from "http-status";
+import { NextRequest } from "next/server";
 
-import { getFirebaseApp } from "@/api/shared/firebaseApp";
-import { verifyIdToken } from "@/api/shared/auth";
-import { errorHandler } from "@/api/shared/handler";
+import { postMessageSchema } from "@/api/chat/schema";
 import { personas, Persona } from "@/modules/openai/personas";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<CreateChatCompletionResponse>
-) {
-  try {
-    if (req.method === "POST") {
-      const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
-      const openai = new OpenAIApi(configuration);
-      const firebaseApp = getFirebaseApp();
+export const config = { runtime: "edge" };
 
-      const parsedReqBody = postMessageSchema.parse(req.body);
-      const idToken = req.headers.authorization || "";
-      await verifyIdToken(firebaseApp, idToken);
+export default async function handler(req: NextRequest) {
+  if (req.method === "POST") {
+    const parsedReqBody = postMessageSchema.parse(await req.json());
+    const idToken = req.headers.get("Authorization") || "";
 
-      const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content:
-              personas[
-                Persona.is(parsedReqBody.persona)
-                  ? parsedReqBody.persona
-                  : "gigachad"
-              ],
-          },
-          ...parsedReqBody.messages,
-        ],
+    const authHeaders = new Headers();
+    authHeaders.append("Authorization", idToken);
+
+    const { status: authStatus } = await fetch(
+      `${process.env.BASE_URL}/api/auth`,
+      {
+        method: "POST",
+        headers: authHeaders,
+      }
+    );
+
+    if (authStatus !== status.OK)
+      return new Response("", {
+        status: authStatus,
+        headers: req.headers,
       });
 
-      return res.status(status.OK).json(response.data);
-    }
-  } catch (e) {
-    errorHandler(e, res);
+    const chatGPTHeaders = new Headers();
+    chatGPTHeaders.append(
+      "Authorization",
+      `Bearer ${process.env.OPENAI_API_KEY}`
+    );
+    chatGPTHeaders.append("Content-Type", "application/json");
+
+    const chatGPTResponse = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        headers: chatGPTHeaders,
+        method: "POST",
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content:
+                personas[
+                  Persona.is(parsedReqBody.persona)
+                    ? parsedReqBody.persona
+                    : "gigachad"
+                ],
+            },
+            ...parsedReqBody.messages,
+          ],
+        }),
+      }
+    );
+
+    const response = await chatGPTResponse.json();
+    return new Response(JSON.stringify(response), {
+      status: status.OK,
+      headers: req.headers,
+    });
   }
-  return res.status(status.NOT_FOUND).end();
+  return new Response("", { status: status.NOT_FOUND, headers: req.headers });
 }
