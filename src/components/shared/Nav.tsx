@@ -72,6 +72,7 @@ export default function Nav({
               const persona = Persona.is(data) ? data : "gigachad";
               router.push({ query: { persona } });
               setMessages([]);
+              setIsMenuOpened(false);
             }}
           />
         </Stack>
