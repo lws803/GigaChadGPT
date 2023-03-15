@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import * as Sentry from "@sentry/browser";
 
 import { post } from "@/modules/openai/actions";
 import { useAuth } from "@/modules/auth";
@@ -54,12 +55,13 @@ export default function ChatInterface({
         persona
       ),
     onSuccess: (data) => {
+      Sentry.captureException(data);
       setMessages([
         ...messages,
         { role: "assistant", content: data.content || "", id: data.id },
       ]);
     },
-    onError: () => {
+    onError: (data) => {
       notifications.show({
         title: "Oops, something went wrong.",
         message:
