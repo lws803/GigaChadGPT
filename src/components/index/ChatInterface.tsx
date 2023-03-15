@@ -55,13 +55,13 @@ export default function ChatInterface({
         persona
       ),
     onSuccess: (data) => {
-      Sentry.captureException(data);
       setMessages([
         ...messages,
         { role: "assistant", content: data.content || "", id: data.id },
       ]);
     },
     onError: (data) => {
+      Sentry.captureException(data);
       notifications.show({
         title: "Oops, something went wrong.",
         message:
