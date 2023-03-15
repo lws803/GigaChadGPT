@@ -28,7 +28,7 @@ export async function post(
       ],
       persona,
     },
-    { headers: { Authorization: userToken }, timeout: 30000 }
+    { headers: { Authorization: userToken } }
   );
 
   return {
