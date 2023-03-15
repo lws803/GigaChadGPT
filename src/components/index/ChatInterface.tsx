@@ -62,7 +62,8 @@ export default function ChatInterface({
     onError: () => {
       notifications.show({
         title: "Oops, something went wrong.",
-        message: "Please try again later...",
+        message:
+          "Please refresh the page and try a different prompt. We will be fixing this bug shortly.",
         color: "red",
       });
     },
