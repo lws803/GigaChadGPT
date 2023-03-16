@@ -10,6 +10,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Notifications } from "@mantine/notifications";
 import { getAnalytics } from "firebase/analytics";
+import LogRocket from "logrocket";
 
 import getFirebase from "@/shared/getFirebase";
 import { AuthContext } from "@/modules/auth";
@@ -32,6 +33,7 @@ export default function App({ Component, pageProps }: AppProps) {
     if (typeof window !== "undefined") {
       const app = getFirebase();
       getAnalytics(app);
+      LogRocket.init("qgkfi4/chadgpt");
     }
   }, []);
 
