@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, GenericAbortSignal } from "axios";
 import {
   ChatCompletionRequestMessage,
   CreateChatCompletionResponse,
@@ -10,7 +10,8 @@ export async function post(
   message: string,
   prevMessages: ChatCompletionRequestMessage[],
   userToken: string,
-  persona: Persona
+  persona: Persona,
+  signal: GenericAbortSignal
 ) {
   const response = await axios.post<
     unknown,
@@ -28,7 +29,7 @@ export async function post(
       ],
       persona,
     },
-    { headers: { Authorization: userToken } }
+    { headers: { Authorization: userToken }, signal }
   );
 
   return {

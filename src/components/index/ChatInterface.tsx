@@ -1,4 +1,5 @@
-import { useRef, useEffect } from "react";
+import axios from "axios";
+import { useRef, useEffect, useState } from "react";
 import { Stack, ActionIcon, Textarea, Box } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
@@ -8,15 +9,15 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import * as Sentry from "@sentry/browser";
+import { useMediaQuery } from "@mantine/hooks";
 
 import { post } from "@/modules/openai/actions";
 import { useAuth } from "@/modules/auth";
+import { Persona } from "@/modules/openai/personas";
 
 import ChatBubble from "./ChatInterface/ChatBubble";
 import { Message } from "./ChatInterface/types";
 import ChatBubblePlaceholder from "./ChatInterface/ChatBubblePlaceholder";
-import { Persona } from "@/modules/openai/personas";
-import { useMediaQuery } from "@mantine/hooks";
 
 const schema = yup
   .object()
@@ -35,6 +36,9 @@ export default function ChatInterface({
   const { currentUser } = useAuth();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const isSmallScreen = useMediaQuery("(max-width:768px)");
+  const [prevAbortController, setPrevAbortController] = useState(
+    new AbortController()
+  );
 
   const { control, handleSubmit, reset, trigger } = useForm<Inputs>({
     defaultValues: { message: "" },
@@ -47,13 +51,20 @@ export default function ChatInterface({
     unknown,
     string
   >({
-    mutationFn: async (data) =>
-      post(
+    mutationFn: async (data) => {
+      // Abort previous request
+      prevAbortController.abort();
+
+      const newAbortController = new AbortController();
+      setPrevAbortController(newAbortController);
+      return post(
         data,
         messages.slice(0, -1),
         (await currentUser?.getIdToken()) || "",
-        persona
-      ),
+        persona,
+        newAbortController.signal
+      );
+    },
     onSuccess: (data) => {
       setMessages([
         ...messages,
@@ -61,6 +72,8 @@ export default function ChatInterface({
       ]);
     },
     onError: (data) => {
+      if (axios.isCancel(data)) return;
+
       Sentry.captureException(data);
       notifications.show({
         title: "Oops, something went wrong.",
