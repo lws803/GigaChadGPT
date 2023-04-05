@@ -1,7 +1,7 @@
 import { NextApiResponse } from "next";
 import { ZodError } from "zod";
 import status from "http-status";
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from "@sentry/node";
 
 import { FirebaseAuthError } from "./auth";
 import { BadRequestException, ForbiddenException } from "./exceptions";
