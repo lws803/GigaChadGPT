@@ -1,6 +1,7 @@
 import { NextApiResponse } from "next";
 import { ZodError } from "zod";
 import status from "http-status";
+import Sentry from "@sentry/nextjs";
 
 import { FirebaseAuthError } from "./auth";
 import { BadRequestException, ForbiddenException } from "./exceptions";
@@ -21,6 +22,8 @@ export const errorHandler = (e: unknown | Error, res: NextApiResponse) => {
     return res
       .status(status.BAD_REQUEST)
       .json({ message: "Validation error.", errors: e.errors });
+
+  Sentry.captureException(e);
 
   return res
     .status(status.INTERNAL_SERVER_ERROR)
