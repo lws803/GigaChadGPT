@@ -10,12 +10,12 @@ import { useLocalStorage } from "@mantine/hooks";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Notifications } from "@mantine/notifications";
 import { getAnalytics } from "firebase/analytics";
-import LogRocket from "logrocket";
 
 import getFirebase from "@/shared/getFirebase";
 import { AuthContext } from "@/modules/auth";
 
 import "../styles/globalStyles.css";
+import LogRocketAnalytics from "@/components/LogRocketAnalytics";
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient();
@@ -33,7 +33,6 @@ export default function App({ Component, pageProps }: AppProps) {
     if (typeof window !== "undefined") {
       const app = getFirebase();
       getAnalytics(app);
-      LogRocket.init("qgkfi4/chadgpt");
     }
   }, []);
 
@@ -77,6 +76,7 @@ export default function App({ Component, pageProps }: AppProps) {
               withNormalizeCSS
               theme={{ colorScheme, primaryColor: "gray" }}
             >
+              <LogRocketAnalytics />
               <Notifications />
               <Component {...pageProps} />
             </MantineProvider>
