@@ -34,6 +34,13 @@ export default async function handler(req: NextRequest) {
     );
     chatGPTHeaders.append("Content-Type", "application/json");
 
+    const res = await fetch(
+      "https://quizzes.cnstrc.com/v1/quizzes/find-your-perfect-mattress/next/?key=key_1tigFZoUEs7Ygkww"
+    );
+    const data = await res.json();
+
+    const lastMessage = parsedReqBody.messages.slice(-1)[0];
+
     const chatGPTResponse = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -46,9 +53,22 @@ export default async function handler(req: NextRequest) {
               role: "system",
               content:
                 "You are a helpful quiz shopping assistant, you will help " +
-                "facilitate a conversation between the user and a quiz.",
+                "facilitate a conversation between the user and a guided quiz API. " +
+                "Try best match user responses to the provided options, user response need not be exact to the available options.",
             },
-            ...parsedReqBody.messages,
+            ...parsedReqBody.messages.slice(
+              0,
+              parsedReqBody.messages.length - 1
+            ),
+            {
+              ...lastMessage,
+              content:
+                `question title: ${data.next_question.title}, ` +
+                `description: ${data.next_question.description}, ` +
+                `available options: ["seen"], display the closest answer to the available option.\n\n` +
+                `User response:\n` +
+                `\`\`\`${lastMessage.content}\`\`\``,
+            },
           ],
         }),
       }
