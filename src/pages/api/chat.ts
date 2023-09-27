@@ -63,11 +63,11 @@ export default async function handler(req: NextRequest) {
       }
     );
 
-    console.log(
-      JSON.parse(
-        (await chatGPTResponseQuizOption.json()).choices[0].message.content
-      )
-    );
+    // console.log(
+    //   JSON.parse(
+    //     (await chatGPTResponseQuizOption.json()).choices[0].message.content
+    //   )
+    // );
 
     const chatGPTResponse = await fetch(
       "https://api.openai.com/v1/chat/completions",
@@ -89,13 +89,12 @@ export default async function handler(req: NextRequest) {
               parsedReqBody.messages.length - 1
             ),
             {
-              ...lastMessage,
+              role: "system",
               content:
                 `question title: ${data.next_question.title}, ` +
-                `description: ${data.next_question.description}\n\n` +
-                `User response:\n` +
-                `\`\`\`${lastMessage.content}\`\`\``,
+                `description: ${data.next_question.description}`,
             },
+            lastMessage,
           ],
         }),
       }
