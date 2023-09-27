@@ -18,7 +18,6 @@ import { Persona } from "@/modules/openai/personas";
 import ChatBubble from "./ChatInterface/ChatBubble";
 import { Message } from "./ChatInterface/types";
 import ChatBubblePlaceholder from "./ChatInterface/ChatBubblePlaceholder";
-import AnnouncementBanner from "./ChatInterface/AnnouncementBanner";
 
 const schema = yup
   .object()
@@ -121,7 +120,6 @@ export default function ChatInterface({
             theme.colorScheme === "dark" ? theme.colors.dark[7] : "#fff",
         })}
       >
-        <AnnouncementBanner />
         <Controller
           name="message"
           control={control}

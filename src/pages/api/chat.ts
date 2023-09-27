@@ -2,7 +2,6 @@ import status from "http-status";
 import { NextRequest } from "next/server";
 
 import { postMessageSchema } from "@/api/chat/schema";
-import { personas, Persona } from "@/modules/openai/personas";
 
 export const config = { runtime: "edge" };
 
@@ -46,11 +45,8 @@ export default async function handler(req: NextRequest) {
             {
               role: "system",
               content:
-                personas[
-                  Persona.is(parsedReqBody.persona)
-                    ? parsedReqBody.persona
-                    : "gigachad"
-                ],
+                "You are a helpful quiz shopping assistant, you will help " +
+                "facilitate a conversation between the user and a quiz.",
             },
             ...parsedReqBody.messages,
           ],
