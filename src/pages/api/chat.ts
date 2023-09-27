@@ -35,11 +35,39 @@ export default async function handler(req: NextRequest) {
     chatGPTHeaders.append("Content-Type", "application/json");
 
     const res = await fetch(
-      "https://quizzes.cnstrc.com/v1/quizzes/find-your-perfect-mattress/next/?key=key_1tigFZoUEs7Ygkww"
+      "https://quizzes.cnstrc.com/v1/quizzes/find-your-perfect-mattress/next/?key=key_1tigFZoUEs7Ygkww&a=seen"
     );
     const data = await res.json();
 
     const lastMessage = parsedReqBody.messages.slice(-1)[0];
+
+    const chatGPTResponseQuizOption = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        headers: chatGPTHeaders,
+        method: "POST",
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content:
+                `You are a text classifier, pick the closest option based on the user response, ` +
+                "else try to guide the user to the available options. Output the closest match as a single response in JSON format.\n" +
+                '"seen" is synonymous with starting the quiz, a greeting or continuing on the quiz.\n' +
+                `available options: ["seen", "skip"]`,
+            },
+            lastMessage,
+          ],
+        }),
+      }
+    );
+
+    console.log(
+      JSON.parse(
+        (await chatGPTResponseQuizOption.json()).choices[0].message.content
+      )
+    );
 
     const chatGPTResponse = await fetch(
       "https://api.openai.com/v1/chat/completions",
@@ -64,8 +92,7 @@ export default async function handler(req: NextRequest) {
               ...lastMessage,
               content:
                 `question title: ${data.next_question.title}, ` +
-                `description: ${data.next_question.description}, ` +
-                `available options: ["seen"], display the closest answer to the available option.\n\n` +
+                `description: ${data.next_question.description}\n\n` +
                 `User response:\n` +
                 `\`\`\`${lastMessage.content}\`\`\``,
             },
